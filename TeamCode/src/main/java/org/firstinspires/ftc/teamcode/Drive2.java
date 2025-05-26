@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode;
 
+import com.acmerobotics.roadrunner.SleepAction;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.ColorSensor;
@@ -97,6 +98,10 @@ public class Drive2 extends LinearOpMode {
     public boolean GP1RBPressedBefore;
 
     public double wakeTime;
+
+    double angle;
+
+   //boolean work;
 
     @Override
     public void runOpMode() {
@@ -264,7 +269,7 @@ public class Drive2 extends LinearOpMode {
                     topClaw.setPosition(0.25);
                     topArm.setPosition(0.4);
                     rack.setPosition(1.0);
-                    bottomClaw.setPosition(1.0);
+                    bottomClaw.setPosition(0.6);
                     bottomArm.setPosition(0.1);
 
                     pressedYBefore=true;
@@ -285,7 +290,7 @@ public class Drive2 extends LinearOpMode {
             if (phaseTwoProgress<=2) {
                 if (gamepad2.b && !pressedBBefore)
                 {   bottomClaw.setPosition(0.0);
-                    bottomArm.setPosition(0);
+                    //bottomArm.setPosition(0);
                     pressedBBefore=true;
                     phaseTwoProgress++;
                     wakeTime=runtime.seconds()+0.5;
@@ -293,6 +298,7 @@ public class Drive2 extends LinearOpMode {
 
                 if (runtime.seconds()>wakeTime && phaseTwoProgress==1) {
                     bottomArm.setPosition(0.5);
+                    clawSpin.setPosition(0.47);
                     phaseTwoProgress++;
                 }
                 if (phaseTwoProgress==2) {phaseTwoProgress=0;pressedBBefore=false;}
@@ -306,7 +312,7 @@ public class Drive2 extends LinearOpMode {
                     wakeTime=runtime.seconds()+1.2;
                 }
                 if (runtime.seconds()>wakeTime && phaseThreeProgress==1) {
-                    bottomArm.setPosition(0.77);
+                    bottomArm.setPosition(0.9);
 
                     phaseThreeProgress++;
                     wakeTime=runtime.seconds()+1.0;
@@ -425,11 +431,16 @@ public class Drive2 extends LinearOpMode {
 
             //claw rotate (temporary system until better one is found)
             //these values are bad tbqh
-            if (gamepad2.left_trigger>0){
-                clawSpin.setPosition(1.0);
+
+            while (gamepad2.left_trigger>0){
+                angle -= 0.01;
+                sleep(10);
+                clawSpin.setPosition(angle);
             }
-            if (gamepad2.right_trigger>0){
-                clawSpin.setPosition(0.5);
+            while (gamepad2.right_trigger>0){
+                angle += 0.01;
+                sleep(10);
+                clawSpin.setPosition(angle);
             }
 
             /*Arm Slide Control with le bumpahs
